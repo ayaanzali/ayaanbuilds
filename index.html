@@ -192,7 +192,7 @@
         <button type="submit">notify me</button>
       </div>
       <div class="form-note"></div>
-      <div class="success" id="success">you're in. something's coming.</div>
+      <div class="success" id="success">you're in.</div>
     </form>
   </div>
 
@@ -200,11 +200,21 @@
     async function handleSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
-      await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
+      
+      try {
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        
+        if (!response.ok) {
+          console.error('Submission failed:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      
       document.getElementById('form-row').classList.add('hidden');
       document.getElementById('success').classList.add('show');
     }
