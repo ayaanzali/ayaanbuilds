@@ -200,22 +200,11 @@
     async function handleSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
-      
-      try {
-        await fetch('https://api.airtable.com/v0/appcUBjWxqFfID2U4/Table%201', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer AIRTABLE_TOKEN',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            fields: { email: email }
-          })
-        });
-      } catch(err) {
-        console.error(err);
-      }
-
+      await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
       document.getElementById('form-row').classList.add('hidden');
       document.getElementById('success').classList.add('show');
     }
