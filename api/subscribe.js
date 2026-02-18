@@ -15,7 +15,11 @@ export default async function handler(req, res) {
   }
   
   try {
-    const response = await fetch('https://api.airtable.com/v0/appcUBjWxqFfID2U4/Table%201', {
+    // Get base ID and table ID from environment variables, or use defaults
+    const baseId = process.env.AIRTABLE_BASE_ID || 'appcUBjWxqFflD2U4';
+    const tableId = process.env.AIRTABLE_TABLE_ID || 'Table%201';
+    
+    const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableId}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
@@ -27,7 +31,8 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const errorData = await response.text();
       console.error('Airtable API error:', response.status, errorData);
-      return res.status(response.status).json({ error: 'Failed to submit to Airtable' });
+      console.error('Base ID:', baseId, 'Table ID:', tableId);
+      return res.status(response.status).json({ error: 'Failed to submit to Airtable', details: errorData });
     }
     
     const data = await response.json();
